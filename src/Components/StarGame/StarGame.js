@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NumberButton from "./NumberButton";
+import StarIcon from "./StarIcon";
 import './StarGame.css';
 
 const StarGame = () => {
@@ -18,10 +19,11 @@ const StarGame = () => {
         </div>
         <div className="body">
           <div className="left">
-            
-          <div className="star" ></div>            
-          <div className="star" ></div>            
-          <div className="star" ></div>            
+            {
+              utils.range(1,stars).map((s)=>{
+                return <StarIcon/>
+              })
+            }         
           </div>
           <div className="right">
             {
