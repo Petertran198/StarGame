@@ -4,13 +4,35 @@ import StarIcon from "./StarIcon";
 import './StarGame.css';
 
 const StarGame = () => {
-      //stars holds a randome number of stars as state 
+    //stars holds a random number of stars as state 
     //setStars holds the function to change that state
     const [stars, setStars] = useState(utils.random(1,9)); 
     // this state is in charge of keeping track of the amount of avaliable numbers left to be the answer
     const [availableNums, setAvailableNums] = useState(utils.range(1,9));
     //canidate numbers are the  numbers being added to see if it equals the amount of stars shown in the game.
     const [canidateNums, setCanidateNums] = useState([0]);
+
+    const onNumberClick = () =>{
+    //called when using clicks on the number button
+    //in charge of recieving the number clicked and then changing it to the correct status
+
+    }
+
+    //check to see if the isNotCanidateNums array is greater then the amount of stars
+    //if the total of isNotCanidateNums is greater than the number of stars then the answer is wrong
+    const isNotCanidateNums = utils.sum(canidateNums) > stars;
+
+    //This will return a status code for each num depending if it is used, wrong, canidate, etc 
+    //We then use the return value to change the color of the button to its correct status
+    const checkNumStatus = (num) =>{
+        if (!availableNums.includes(num)) {
+            return "used";
+        }
+        if(canidateNums.includes(num)){
+          return isNotCanidateNums ? "wrong": "canidate"
+        }
+        return 'available';
+    }
 
     return (
         <div className="game">
@@ -21,15 +43,19 @@ const StarGame = () => {
           <div className="left">
             {
               utils.range(1,stars).map((s)=>{
-                return <StarIcon/>
+                return <StarIcon key={s}/>
               })
             }         
           </div>
           <div className="right">
             {
-              utils.range(1,9).map((num) => {
-              return <NumberButton number={num}/>
-            })
+              utils.range(1,9).map(num => {
+              return (<NumberButton
+                         number={num}
+                         key={num}
+                         status={checkNumStatus(num)}
+                         />)
+              })
             }
           </div>
         </div>
@@ -38,6 +64,7 @@ const StarGame = () => {
     )
 }
 
+  
 // Math science
 const utils = {
   // Sum an array
