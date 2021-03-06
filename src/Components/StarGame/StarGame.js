@@ -12,14 +12,18 @@ const StarGame = (props) => {
     const [availableNums, setAvailableNums] = useState(utils.range(1,9));
     //canidate numbers are the  numbers being added to see if it equals the amount of stars shown in the game.
     const [canidateNums, setCanidateNums] = useState([0]);
+    //hold the state of the game's timer in seconds 
     const [timeLeftInSeconds, setTimeLeftInSeconds ]  = useState(props.time);
+
     const isGameOver = availableNums.length === 0 || timeLeftInSeconds == 0; 
 
+    //Refresh page therefore remounting all components to get back to choose game mode btn
     const chooseNewMode = () =>{
       window.location.reload();
       return false;
     }
 
+    //What it is doing here is call the setTimeout function once when the component renders. The setTimeout function will decrease the seconds by 1 continuosly making a loop
     useEffect(() => {
       let timerId
       if(timeLeftInSeconds > 0){
@@ -48,6 +52,7 @@ const StarGame = (props) => {
         return 'available';
     }    
 
+    //Reset state to play again
     const newGame = () =>{
       setAvailableNums(utils.range(1,9));
       setCanidateNums([]);
@@ -55,14 +60,10 @@ const StarGame = (props) => {
       setTimeLeftInSeconds(props.time)
     }
 
-    const selectTimeForGame = (time) =>{
-      setTimeLeftInSeconds(time);
-    }
-
-    const onNumberClick = (btnNum, currStatus) =>{
     //called when using clicks on the number button
-    //in charge of recieving the number clicked and then changing it to the correct status 
-    //If number is used just return so u can't click on it 
+    //in charge of recieving the number clicked and then changing it to the correct status
+    const onNumberClick = (btnNum, currStatus) =>{
+      //If number is used just return so u can't click on it 
       if(currStatus === "used"){
         return;
       }
@@ -75,13 +76,20 @@ const StarGame = (props) => {
         //if btnStatus is not "avilable" it can only be wrong or canidate because our first condition checks to see if btnNum is USED and if it is return  
         newCanidateKeys = canidateNums.filter(num => num != btnNum);
       }
-        //check to see if the sum of the canidate keys are not equal to the sum of stars
-        if(utils.sum(newCanidateKeys) !== stars){
+      //if the total amount or the new canidates so far doesn't sum up to the amount of stars 
+      //then that means we dont have the correct answer yet so just mark it as a canidate        
+      if(utils.sum(newCanidateKeys) !== stars){
           setCanidateNums(newCanidateKeys)
         } else {
+        //else if the new canidates does equal to the amount of stars then we got it correct 
+        // and we got to mark it as used and reset the canidate array so we can play another round
+        // if canidate array is NOT reset the old data will be included when we play another round          
           const noUsedNums = availableNums.filter((num) => !newCanidateKeys.includes(num));
           setAvailableNums(noUsedNums);
           setCanidateNums([]);
+          //We also got to redraw the number of star to start another round
+          // randomSumIn takes 2 arguments 1 the array of available number and 2 the  number of stars u can display
+          // this function allows us to randomly select a AVAILABLE num in our array up to 9 stars max 
           setStars(utils.randomSumIn(noUsedNums, 9));
         }
     }
