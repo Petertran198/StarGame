@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import NumberButton from "./NumberButton";
 import StarIcon from "./StarIcon";
 import './StarGame.css';
+import PlayAgainBtn from './PlayAgainBtn';
 
-const StarGame = () => {
+const StarGame = (props) => {
     //stars holds a random number of stars as state 
     //setStars holds the function to change that state
     const [stars, setStars] = useState(utils.random(1,9)); 
@@ -11,17 +12,30 @@ const StarGame = () => {
     const [availableNums, setAvailableNums] = useState(utils.range(1,9));
     //canidate numbers are the  numbers being added to see if it equals the amount of stars shown in the game.
     const [canidateNums, setCanidateNums] = useState([0]);
+    const [timeLeftInSeconds, setTimeLeftInSeconds ]  = useState(props.time);
+    const isGameOver = availableNums.length === 0 || timeLeftInSeconds == 0; 
 
-    const onNumberClick = () =>{
-    //called when using clicks on the number button
-    //in charge of recieving the number clicked and then changing it to the correct status
-
+    const chooseNewMode = () =>{
+      window.location.reload();
+      return false;
     }
+
+    useEffect(() => {
+      let timerId
+      if(timeLeftInSeconds > 0){
+          timerId = setTimeout(() => {
+          setTimeLeftInSeconds(timeLeftInSeconds - 1)
+        }, 1000);
+      }
+      return () => {
+        clearTimeout(timerId)
+      }
+    })
+
 
     //check to see if the isNotCanidateNums array is greater then the amount of stars
     //if the total of isNotCanidateNums is greater than the number of stars then the answer is wrong
     const isNotCanidateNums = utils.sum(canidateNums) > stars;
-
     //This will return a status code for each num depending if it is used, wrong, canidate, etc 
     //We then use the return value to change the color of the button to its correct status
     const checkNumStatus = (num) =>{
@@ -32,6 +46,44 @@ const StarGame = () => {
           return isNotCanidateNums ? "wrong": "canidate"
         }
         return 'available';
+    }    
+
+    const newGame = () =>{
+      setAvailableNums(utils.range(1,9));
+      setCanidateNums([]);
+      setStars(utils.random(1,9));
+      setTimeLeftInSeconds(props.time)
+    }
+
+    const selectTimeForGame = (time) =>{
+      setTimeLeftInSeconds(time);
+    }
+
+    const onNumberClick = (btnNum, currStatus) =>{
+    //called when using clicks on the number button
+    //in charge of recieving the number clicked and then changing it to the correct status 
+    //If number is used just return so u can't click on it 
+      if(currStatus === "used"){
+        return;
+      }
+      // Container to keep track of the new Canidate keys
+      let newCanidateKeys; 
+      //check to see if key status is avialable
+      if(currStatus === 'available'){
+        newCanidateKeys = [...canidateNums, btnNum];
+      } else  {
+        //if btnStatus is not "avilable" it can only be wrong or canidate because our first condition checks to see if btnNum is USED and if it is return  
+        newCanidateKeys = canidateNums.filter(num => num != btnNum);
+      }
+        //check to see if the sum of the canidate keys are not equal to the sum of stars
+        if(utils.sum(newCanidateKeys) !== stars){
+          setCanidateNums(newCanidateKeys)
+        } else {
+          const noUsedNums = availableNums.filter((num) => !newCanidateKeys.includes(num));
+          setAvailableNums(noUsedNums);
+          setCanidateNums([]);
+          setStars(utils.randomSumIn(noUsedNums, 9));
+        }
     }
 
     return (
@@ -42,6 +94,7 @@ const StarGame = () => {
         <div className="body">
           <div className="left">
             {
+              isGameOver ? <PlayAgainBtn newGame={newGame}/> :
               utils.range(1,stars).map((s)=>{
                 return <StarIcon key={s}/>
               })
@@ -54,12 +107,14 @@ const StarGame = () => {
                          number={num}
                          key={num}
                          status={checkNumStatus(num)}
+                         onNumberClick={onNumberClick}
                          />)
               })
             }
           </div>
         </div>
-        <div className="timer">Time Remaining: 10</div>
+        <div className="timer">Time Remaining: {timeLeftInSeconds} </div>
+        <button onClick={chooseNewMode}>Switch Mode</button>
       </div>
     )
 }

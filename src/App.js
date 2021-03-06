@@ -1,9 +1,9 @@
 import React from 'react';
-import StarGame from './Components/StarGame/StarGame';
+import GameBoard from './Components/StarGame/GameBoard';
 
 function App() {
   return (
-    <StarGame/>
+    <GameBoard/>
   );
 }
 
