@@ -14,14 +14,14 @@ const StarGame = (props) => {
     const [canidateNums, setCanidateNums] = useState([0]);
     //hold the state of the game's timer in seconds 
     const [timeLeftInSeconds, setTimeLeftInSeconds ]  = useState(props.time);
-
-    const isGameOver = availableNums.length === 0 || timeLeftInSeconds == 0; 
+    const isGameOver = availableNums.length === 0 || timeLeftInSeconds === 0; 
 
     //Refresh page therefore remounting all components to get back to choose game mode btn
     const chooseNewMode = () =>{
       window.location.reload();
       return false;
     }
+
 
     //What it is doing here is call the setTimeout function once when the component renders. The setTimeout function will decrease the seconds by 1 continuosly making a loop
     useEffect(() => {
@@ -74,7 +74,7 @@ const StarGame = (props) => {
         newCanidateKeys = [...canidateNums, btnNum];
       } else  {
         //if btnStatus is not "avilable" it can only be wrong or canidate because our first condition checks to see if btnNum is USED and if it is return  
-        newCanidateKeys = canidateNums.filter(num => num != btnNum);
+        newCanidateKeys = canidateNums.filter(num => num !== btnNum);
       }
       //if the total amount or the new canidates so far doesn't sum up to the amount of stars 
       //then that means we dont have the correct answer yet so just mark it as a canidate        
@@ -95,8 +95,8 @@ const StarGame = (props) => {
     }
 
     return (
-        <div className="game">
-        <div className="help">
+        <div className="game ">
+        <div className="help text-light">
           Pick 1 or more numbers that sum to the number of stars
         </div>
         <div className="body">
@@ -121,8 +121,8 @@ const StarGame = (props) => {
             }
           </div>
         </div>
-        <div className="timer">Time Remaining: {timeLeftInSeconds} </div>
-        <button onClick={chooseNewMode}>Switch Mode</button>
+        <div className={`timer ${timeLeftInSeconds > 5 ? 'text-light':'text-danger'}`}>Time Remaining: {timeLeftInSeconds} </div>
+        <button  className="btn btn-outline-light mt-1 btn-block" onClick={chooseNewMode}>Switch Mode</button>
       </div>
     )
 }

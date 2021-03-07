@@ -1,6 +1,4 @@
 import React from 'react';
-import StarGame from './StarGame'
-
 const GameMode = (props) => {
 //In charge of selecting the mode to play
     const handleBtn = () =>{
@@ -10,7 +8,7 @@ const GameMode = (props) => {
     }
     return (
         <div>
-            <button onClick={handleBtn}>{props.modeText}</button>
+            <button className="btn btn-outline-light btn-lg m-3  animate__animated animate__rubberBand " onClick={handleBtn}>{props.modeText}</button>
         </div>
     )
 }

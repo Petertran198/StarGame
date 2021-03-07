@@ -2,8 +2,8 @@ import React from 'react';
 
 //Holds the values of the colors of the buttons
 const colors = {
-    available: "lightgreen",
-    used: "lightgray",
+    available: "white",
+    used: "black",
     wrong: "red",
     canidate: "lightblue"
 }

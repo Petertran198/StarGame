@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import GameMode from './GameMode';
 import StarGame from './StarGame';
+import './GameBoard.css';
 
 const GameBoard = () => {
     // in charge of keepingtrack if the buttons are shown or not
@@ -26,20 +27,22 @@ const GameBoard = () => {
     }
 
     return (
-        <div>
-            <h1>Welcome to the StarGame</h1>
-            {
-              isBtnShown ? gameModes.map((mode) =>( 
-                <GameMode
-                     modeText={mode.modeText}
-                     time={mode.Time}
-                     handleBtnShown={handleBtnShown}
-                     handleTime={handleTime}
-                />))
-                : <StarGame time={time}/> 
-            }
-            
+        <div className="gameBoard">
+            <h1 className="text-center pt-3">Welcome to the StarGame</h1>
+            <div className ="btn-flex-container">
+                {
+                isBtnShown ? gameModes.map((mode) =>( 
+                    <GameMode 
+                        key={mode.modeText}
+                        modeText={mode.modeText}
+                        time={mode.Time}
+                        handleBtnShown={handleBtnShown}
+                        handleTime={handleTime}
+                    />))
+                    : <StarGame time={time}/> 
+                }
 
+            </div>
         </div>
     )
 }
