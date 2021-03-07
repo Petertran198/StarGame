@@ -3,6 +3,7 @@ import NumberButton from "./NumberButton";
 import StarIcon from "./StarIcon";
 import './StarGame.css';
 import PlayAgainBtn from './PlayAgainBtn';
+import PreviousScore from './PreviousScore';
 
 const StarGame = (props) => {
     //stars holds a random number of stars as state 
@@ -97,8 +98,9 @@ const StarGame = (props) => {
     return (
         <div className="game ">
         <div className="help text-light">
-          Pick 1 or more numbers that sum to the number of stars
+          Pick 1 or more numbers that sum to the number of stars 
         </div>
+        {isGameOver &&  <PreviousScore score={Math.abs(availableNums.length - 9)}/> }
         <div className="body">
           <div className="left">
             {
